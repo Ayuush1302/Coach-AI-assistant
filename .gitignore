@@ -1,0 +1,29 @@
+# System
+.DS_Store
+*.log
+
+# Backend - Python
+backend/__pycache__/
+backend/venv/
+backend/.env
+backend/*.pyc
+
+# Backend - Models and Data
+backend/output/
+backend/*.spacy
+backend/temp_*.wav
+backend/training_data.csv
+backend/comprehensive_training_dataset_randomized_900.csv
+backend/ffmpeg
+
+# Frontend - Node
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# IDE
+.vscode/
+.idea/
+
+
