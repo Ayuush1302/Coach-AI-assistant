@@ -69,7 +69,7 @@ def parse_workout(request: ParseRequest):
     structured_data = parse_workout_text(request.text)
     
     # Log valid transcriptions for dataset collection (Phase 2 preparation)
-    if structured_data.get("original_text"):
+    if structured_data.get("original_text") and not structured_data.get("error"):
         log_file = "training_data.csv"
         file_exists = os.path.isfile(log_file)
         
