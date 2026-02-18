@@ -125,7 +125,6 @@ function App() {
           )}
         </div>
 
-        {/* Analysis Results (Shared) */}
         {/* Error State */}
         {workoutData && workoutData.error && (
           <div className="mt-8 mx-auto max-w-md bg-red-50 border border-red-100 p-4 rounded-lg flex items-center gap-3 text-red-700 animate-in fade-in slide-in-from-top-2">
@@ -134,47 +133,61 @@ function App() {
           </div>
         )}
 
-        {/* Success State - Table View */}
-        {workoutData && !workoutData.error && (
-          <div className="mt-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
-              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
-                <h3 className="font-semibold text-slate-800">Parsed Assignment</h3>
-                <span className={`text-xs px-2 py-1 rounded-full border ${workoutData.confidence === 'High' ? 'bg-green-50 border-green-200 text-green-700' :
+        {/* Success State - Dynamic Table View */}
+        {workoutData && !workoutData.error && workoutData.assignments && workoutData.assignments.length > 0 && (
+          <div className="mt-12 animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
+            {workoutData.assignments.map((assignment, idx) => (
+              <div key={idx} className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+                <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                  <h3 className="font-semibold text-slate-800">
+                    {workoutData.assignments.length > 1
+                      ? `Assignment ${idx + 1}`
+                      : 'Parsed Assignment'}
+                  </h3>
+                  <span className={`text-xs px-2 py-1 rounded-full border ${workoutData.confidence === 'High' ? 'bg-green-50 border-green-200 text-green-700' :
                     workoutData.confidence === 'Medium' ? 'bg-yellow-50 border-yellow-200 text-yellow-700' :
                       'bg-slate-100 border-slate-200 text-slate-600'
-                  }`}>
-                  {workoutData.confidence} Confidence
-                </span>
-              </div>
+                    }`}>
+                    {workoutData.confidence} Confidence
+                  </span>
+                </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-slate-50/50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-100">
-                    <tr>
-                      <th className="px-6 py-3">Athlete</th>
-                      <th className="px-6 py-3">Type</th>
-                      <th className="px-6 py-3">Details (Distance/Weight)</th>
-                      <th className="px-6 py-3">Time</th>
-                      <th className="px-6 py-3">Pace</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    <tr className="hover:bg-slate-50/50 transition-colors">
-                      <td className="px-6 py-4 font-medium text-slate-900">{workoutData.athlete}</td>
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                          {workoutData.task_type}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-slate-600">{workoutData.distance || "-"}</td>
-                      <td className="px-6 py-4 text-slate-600">{workoutData.time || "-"}</td>
-                      <td className="px-6 py-4 text-slate-600">{workoutData.pace || "-"}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-slate-50/50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-100">
+                      <tr>
+                        <th className="px-6 py-3 w-1/3">Attribute</th>
+                        <th className="px-6 py-3">Value</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {assignment.attributes.map((attr, attrIdx) => (
+                        <tr key={attrIdx} className="hover:bg-slate-50/50 transition-colors">
+                          <td className="px-6 py-3 font-medium text-slate-700">{attr.key}</td>
+                          <td className="px-6 py-3 text-slate-900">
+                            {attr.key === 'Activity' ? (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                {attr.value}
+                              </span>
+                            ) : attr.key === 'Intensity' ? (
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${attr.value === 'Easy' ? 'bg-green-100 text-green-800' :
+                                  attr.value === 'Moderate' ? 'bg-yellow-100 text-yellow-800' :
+                                    attr.value === 'Hard' ? 'bg-red-100 text-red-800' :
+                                      'bg-slate-100 text-slate-800'
+                                }`}>
+                                {attr.value}
+                              </span>
+                            ) : (
+                              attr.value
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
+            ))}
 
             <div className="mt-6">
               <details className="group">
