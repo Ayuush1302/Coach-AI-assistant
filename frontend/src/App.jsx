@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import AudioRecorder from './components/AudioRecorder';
 import { Activity, Copy, CheckCircle, AlertCircle, Mic, Type, ArrowRight, Loader2 } from 'lucide-react';
+import API_BASE_URL from './config';
 
 function App() {
   const [workoutData, setWorkoutData] = useState(null);
@@ -21,7 +22,7 @@ function App() {
     setWorkoutData(null);
 
     try {
-      const parseResponse = await axios.post('http://localhost:8000/parse', { text: textInput });
+      const parseResponse = await axios.post(`${API_BASE_URL}/parse`, { text: textInput });
       setWorkoutData(parseResponse.data);
     } catch (error) {
       console.error("Error processing text:", error);
@@ -171,9 +172,9 @@ function App() {
                               </span>
                             ) : attr.key === 'Intensity' ? (
                               <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${attr.value === 'Easy' ? 'bg-green-100 text-green-800' :
-                                  attr.value === 'Moderate' ? 'bg-yellow-100 text-yellow-800' :
-                                    attr.value === 'Hard' ? 'bg-red-100 text-red-800' :
-                                      'bg-slate-100 text-slate-800'
+                                attr.value === 'Moderate' ? 'bg-yellow-100 text-yellow-800' :
+                                  attr.value === 'Hard' ? 'bg-red-100 text-red-800' :
+                                    'bg-slate-100 text-slate-800'
                                 }`}>
                                 {attr.value}
                               </span>

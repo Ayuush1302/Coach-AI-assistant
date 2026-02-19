@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import { Mic, Square, Loader2, Play } from 'lucide-react';
+import API_BASE_URL from '../config';
 
 const AudioRecorder = ({ onAnalysisComplete }) => {
     const [isRecording, setIsRecording] = useState(false);
@@ -53,7 +54,7 @@ const AudioRecorder = ({ onAnalysisComplete }) => {
 
         try {
             // 1. Transcribe
-            const transcribeResponse = await axios.post('http://localhost:8000/transcribe', formData, {
+            const transcribeResponse = await axios.post(`${API_BASE_URL}/transcribe`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
@@ -61,7 +62,7 @@ const AudioRecorder = ({ onAnalysisComplete }) => {
             setTranscript(text);
 
             // 2. Parse
-            const parseResponse = await axios.post('http://localhost:8000/parse', { text });
+            const parseResponse = await axios.post(`${API_BASE_URL}/parse`, { text });
             onAnalysisComplete(parseResponse.data);
 
         } catch (error) {
@@ -85,8 +86,8 @@ const AudioRecorder = ({ onAnalysisComplete }) => {
                     onClick={isRecording ? stopRecording : startRecording}
                     disabled={isProcessing}
                     className={`relative w-20 h-20 flex items-center justify-center rounded-full transition-all duration-300 ${isRecording
-                            ? 'bg-red-500 hover:bg-red-600 text-white shadow-red-500/50'
-                            : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-500/50'
+                        ? 'bg-red-500 hover:bg-red-600 text-white shadow-red-500/50'
+                        : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-500/50'
                         } shadow-lg disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                     {isProcessing ? (
