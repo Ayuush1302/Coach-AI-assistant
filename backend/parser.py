@@ -1,20 +1,24 @@
 import os
 import re
-import spacy
 from datetime import datetime, timedelta
 
-# Load SpaCy model (Custom trained > Generic > None)
-model_path = "./output/model-best"
+# SpaCy is optional — parser works with pure regex when unavailable
 try:
+    import spacy
+    model_path = "./output/model-best"
     if os.path.exists(model_path):
         nlp = spacy.load(model_path)
         print(f"Loaded custom model from {model_path}")
     else:
-        nlp = spacy.load("en_core_web_sm")
-        print("Loaded generic model en_core_web_sm")
-except OSError:
+        try:
+            nlp = spacy.load("en_core_web_sm")
+            print("Loaded generic model en_core_web_sm")
+        except OSError:
+            nlp = None
+            print("No spaCy base model found, using regex-only parsing")
+except ImportError:
     nlp = None
-    print("Warning: No spacy model found.")
+    print("SpaCy not installed — using regex-only parsing")
 
 
 # ─── Date / Time Inference Helpers ───────────────────────────────────────────
